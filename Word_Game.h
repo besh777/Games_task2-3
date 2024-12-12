@@ -4,7 +4,6 @@
 template <typename T>
 class Word_Game : public Board<T>{
     vector<int> failed_words {0,0,0,0,0,0,0,0};
-    vector<int> failed_reverse{0,0,0,0,0,0,0,0};
     vector<string> words;
     bool Word_compare(string word,string rword);
 public:
@@ -108,7 +107,6 @@ bool Word_Game<T>::is_win() {
                     Rword.clear();
                 }
                 failed_words[i] = 1;
-                failed_reverse[i] = 1;
             }
         }
     }
@@ -129,7 +127,6 @@ bool Word_Game<T>::is_win() {
                     Rword.clear();
                 }
                 failed_words[3+i] = 1;
-                failed_reverse[3+i] = 1;
             }
         }
     }
@@ -148,7 +145,6 @@ bool Word_Game<T>::is_win() {
                     return true;
                 }
                 failed_words[6+i] = 1;
-                failed_reverse[6+i] =1;
             }
         }
     }
