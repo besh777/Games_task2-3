@@ -39,6 +39,7 @@ using namespace std;
 
 template<typename T>
 Word_Game<T> :: Word_Game() {
+
     this->rows = this->columns =3;
     this->board = new char*[this->rows];
     for (int i = 0; i < this->rows; ++i) {
@@ -48,6 +49,7 @@ Word_Game<T> :: Word_Game() {
         }
     }
     this->n_moves = 0;
+
     string line;
     ifstream infile("dic.txt");
     while (infile >> line){
@@ -58,6 +60,7 @@ Word_Game<T> :: Word_Game() {
 
 template<typename T>
 bool Word_Game<T>::update_board(int x, int y, T symbol) {
+
     if (!(x < 0||x > 2 || y < 0||y > 2) && (this->board[x][y] == 0 || symbol == 0)){
         if (symbol == 0){
             this->n_moves--;
@@ -68,11 +71,14 @@ bool Word_Game<T>::update_board(int x, int y, T symbol) {
         }
         return true;
     }
+
+    cout << "this square is out of range or full please try again" << endl;
     return false;
 }
 
 template<typename T>
 void Word_Game<T>::display_board() {
+
     for (int i = 0; i < this->rows; ++i) {
         cout<< "|";
         for (int j = 0; j < this->columns; ++j) {
@@ -83,13 +89,16 @@ void Word_Game<T>::display_board() {
             }
         }
     }
+
     cout << "-------------------------" << endl;
 }
 
 template<typename T>
 bool Word_Game<T>::is_win() {
+
     string Word;
     string Rword;
+
     for (int i = 0; i < this->rows; ++i) {
         if (this->board[i][0] != 0 &&
         this->board[i][1] != 0 && this->board[i][2] != 0){
@@ -110,6 +119,7 @@ bool Word_Game<T>::is_win() {
             }
         }
     }
+
     for (int i = 0; i < this->columns; ++i) {
         if (this->board[0][i] != 0 &&
             this->board[1][i] != 0 && this->board[2][i] != 0){
@@ -130,10 +140,12 @@ bool Word_Game<T>::is_win() {
             }
         }
     }
+
     for (int i = 0; i < 2; ++i) {
         if (this->board[0][2*i] != 0 &&
             this->board[1][1] != 0 && this->board[2][2-(2*i)] != 0){
             if (failed_words[6+i] == 0){
+
                 Word += this->board[0][2*i];
                 Word += this->board[1][1];
                 Word += this->board[2][2-(2*i)];
@@ -141,6 +153,7 @@ bool Word_Game<T>::is_win() {
                 Rword += this->board[2][2-(2*i)];
                 Rword += this->board[1][1];
                 Rword += this->board[0][2*i];
+
                 if (Word_compare(Word,Rword)){
                     return true;
                 }
@@ -154,11 +167,13 @@ bool Word_Game<T>::is_win() {
 
 template<typename T>
 bool Word_Game<T>::Word_compare(string word,string rword) {
+
     for (int i = 0; i < words.size(); ++i) {
         if (word == words[i] || rword == words[i]){
             return true;
         }
     }
+
     return false;
 }
 
@@ -179,6 +194,7 @@ static bool first = true;
 
 template<typename T>
 void Word_Player<T>::getmove(int &x, int &y) {
+
     while (true){
         string position1;
         string position2;
@@ -186,31 +202,38 @@ void Word_Player<T>::getmove(int &x, int &y) {
             cout << "choose x and y from 0 to 2 and separated it by enter:" << endl;
             cout << "x:" << endl;
         }
+
         getline(cin,position1);
         if (first){
             first = false;
             continue;
         }
+
         cout << "y:" << endl;
         getline(cin,position2);
+
         if ((position1.size() == 1 && position2.size() == 1)
         && (isdigit(position1[0]) && isdigit(position2[0]))){
             x = stoi(position1);
             y = stoi(position2);
             break;
         }
+
         cout << "wrong inputs" << endl;
     }
+
     while (true){
         char letter;
         string cha;
         cout << "enter a letter to create a word:";
         getline(cin,cha);
+
         if (cha.size() == 1 && isalpha(cha[0])){
             letter = cha[0];
             this->symbol = letter;
             break;
         }
+        
         cout << "wrong input" << endl;
 
     }
@@ -227,6 +250,7 @@ template<typename T>
 void Word_RandomPlayer<T>::getmove(int &x, int &y) {
     x = rand() % this->dimension;
     y = rand() % this->dimension;
+
     int i;
     i = rand() % random_word;
     this->symbol = alphabet[i];

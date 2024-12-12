@@ -33,6 +33,7 @@ using namespace std;
 
 template<typename T>
 Pyramid_Game<T> :: Pyramid_Game(){
+
     this->rows = 3;
     this->board = new char*[this->rows] ;
     for (int i = 0; i < this->rows; ++i) {
@@ -41,11 +42,13 @@ Pyramid_Game<T> :: Pyramid_Game(){
             this->board[i][j] = 0;
         }
     }
+
     this->n_moves = 0;
 }
 
 template<typename T>
 bool Pyramid_Game<T>::update_board(int x, int y, T symbol) {
+
     for (int i = 0; i < 3; ++i) {
         if (!(x < 0||x > 2 || y < 0||y > (2*x+1)) && (this->board[x][y] == 0 || symbol == 0)){
             if (symbol == 0){
@@ -58,11 +61,14 @@ bool Pyramid_Game<T>::update_board(int x, int y, T symbol) {
             return true;
         }
     }
+
+    cout << "this square is out of range or full please try again" << endl;
     return false;
 }
 
 template<typename T>
 void Pyramid_Game<T>::display_board() {
+
     cout << setw(17) << right;
     for (int i = 0; i < this->rows; ++i) {
         if (i == 1){
@@ -77,6 +83,7 @@ void Pyramid_Game<T>::display_board() {
             }
         }
     }
+
     cout << "-----------------------------------------" << endl;
 }
 
@@ -89,6 +96,7 @@ bool Pyramid_Game<T>::is_win() {
             return true;
         }
     }
+
     for (int i = 0; i < 2; ++i) {
         if (this->board[2*i][0]==this->board[1][1] && this->board[1][1]==
         this->board[i+1][2] &&this->board[2*i][0] != 0){
@@ -102,6 +110,7 @@ bool Pyramid_Game<T>::is_win() {
             return true;
         }
     }
+
     return false;
 }
 
@@ -109,17 +118,20 @@ template<typename T>
 bool Pyramid_Game<T>::is_draw() {
     return (this->n_moves == 9 && !(is_win()));
 }
+
 template<typename T>
 bool Pyramid_Game<T>::game_is_over() {
     return (is_win() || is_draw());
 }
 
+template<typename T>
+Pyramid_Player<T> ::Pyramid_Player(std::string name, T symbol) : Player<T>(name,symbol) {}
+
 static bool first = true;
 
 template<typename T>
-Pyramid_Player<T> ::Pyramid_Player(std::string name, T symbol) : Player<T>(name,symbol) {}
-template<typename T>
 void Pyramid_Player<T>::getmove(int &x, int &y) {
+
     while (true){
         string position1;
         string position2;
@@ -136,12 +148,14 @@ void Pyramid_Player<T>::getmove(int &x, int &y) {
 
         cout << "y:" << endl;
         getline(cin,position2);
+
         if ((position1.size() == 1 && position2.size() == 1)
             && (isdigit(position1[0]) && isdigit(position2[0]))){
             x = stoi(position1);
             y = stoi(position2);
             break;
         }
+        
         cout << "wrong inputs" << endl;
     }
 }
