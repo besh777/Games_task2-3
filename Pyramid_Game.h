@@ -1,5 +1,6 @@
-#ifndef OOP_2_PYRAMID_GAME_H
-#define OOP_2_PYRAMID_GAME_H
+#ifndef PYRAMID_GAME_H
+#define PYRAMID_GAME_H
+
 #include "BoardGame_Classes.h"
 template<typename T>
 class Pyramid_Game : public Board<T>{
@@ -24,13 +25,15 @@ public:
     void getmove(int &x,int &y);
 };
 
+// the Implementation
+
 #include <iostream>
 #include <iomanip>
 #include <cctype>
 using namespace std;
 
 
-
+// Initialization of the Pyramid board by row and produce columns by 2*row+1
 template<typename T>
 Pyramid_Game<T> :: Pyramid_Game(){
 
@@ -46,15 +49,13 @@ Pyramid_Game<T> :: Pyramid_Game(){
     this->n_moves = 0;
 }
 
+// function to verify that the move is valid or not
 template<typename T>
 bool Pyramid_Game<T>::update_board(int x, int y, T symbol) {
 
     for (int i = 0; i < 3; ++i) {
-        if (!(x < 0||x > 2 || y < 0||y > (2*x+1)) && (this->board[x][y] == 0 || symbol == 0)){
-            if (symbol == 0){
-                this->n_moves--;
-                this->board[x][y] = 0;
-            }else{
+        if (!(x < 0||x > 3 || y < 0||y > (2*x+1)) && (this->board[x][y] == 0)){
+            if (symbol!=0){
                 this->n_moves++;
                 this->board[x][y] = toupper(symbol);
             }
@@ -66,6 +67,7 @@ bool Pyramid_Game<T>::update_board(int x, int y, T symbol) {
     return false;
 }
 
+// Display the board
 template<typename T>
 void Pyramid_Game<T>::display_board() {
 
@@ -87,26 +89,30 @@ void Pyramid_Game<T>::display_board() {
     cout << "-----------------------------------------" << endl;
 }
 
+// check if player won or not
 template<typename T>
 bool Pyramid_Game<T>::is_win() {
-
+    
+    // check combination of third row 
     for (int i = 0; i < 3; ++i) {
         if (this->board[2][i]==this->board[2][i+1] && this->board[2][i+1]==
-        this->board[2][i+2] &&this->board[2][i] != 0){
+                                                      this->board[2][i+2] &&this->board[2][i] != 0){
             return true;
         }
     }
-
+    
+    // check the column and second row
     for (int i = 0; i < 2; ++i) {
         if (this->board[2*i][0]==this->board[1][1] && this->board[1][1]==
-        this->board[i+1][2] &&this->board[2*i][0] != 0){
+                                                      this->board[i+1][2] &&this->board[2*i][0] != 0){
             return true;
         }
     }
 
+    // check the diagonals
     for (int i = 0; i < 2; ++i) {
         if (this->board[0][0]==this->board[1][2*i] && this->board[1][2*i]==
-        this->board[2][4*i] &&this->board[0][0] != 0){
+                                                      this->board[2][4*i] &&this->board[0][0] != 0){
             return true;
         }
     }
@@ -114,21 +120,26 @@ bool Pyramid_Game<T>::is_win() {
     return false;
 }
 
+// check if the game is ended in a draw
 template<typename T>
 bool Pyramid_Game<T>::is_draw() {
     return (this->n_moves == 9 && !(is_win()));
 }
 
+// ending the game
 template<typename T>
 bool Pyramid_Game<T>::game_is_over() {
     return (is_win() || is_draw());
 }
 
+// Constructor of Pyramid_Player with name and symbol
 template<typename T>
 Pyramid_Player<T> ::Pyramid_Player(std::string name, T symbol) : Player<T>(name,symbol) {}
 
+// it handles the error of the first loop in getmove
 static bool first = true;
 
+// safe input with string before convert it to int 
 template<typename T>
 void Pyramid_Player<T>::getmove(int &x, int &y) {
 
@@ -155,17 +166,19 @@ void Pyramid_Player<T>::getmove(int &x, int &y) {
             y = stoi(position2);
             break;
         }
-        
+
         cout << "wrong inputs" << endl;
     }
 }
 
+//Constructor of Pyramid_RandomPlayer with default name and symbol
 template<typename T>
 Pyramid_RandomPlayer<T> ::Pyramid_RandomPlayer(T symbol) : RandomPlayer<T>(symbol) {
     this->dimension = 3;
     srand(static_cast<unsigned int>(time(nullptr)));
 }
 
+// input by random 
 template<typename T>
 void Pyramid_RandomPlayer<T>::getmove(int &x, int &y) {
 
@@ -173,4 +186,5 @@ void Pyramid_RandomPlayer<T>::getmove(int &x, int &y) {
     y = rand() % ((2*x)-1);
 }
 
-#endif //OOP_2_PYRAMID_GAME_H
+
+#endif PYRAMID_GAME_H

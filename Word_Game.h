@@ -1,9 +1,12 @@
-#ifndef OOP_2_WORD_GAME_H
-#define OOP_2_WORD_GAME_H
+#ifndef WORD_GAME_H
+#define WORD_GAME_H
+
 #include "BoardGame_Classes.h"
 template <typename T>
 class Word_Game : public Board<T>{
+    // first 3 represents rows , second 3 are columns and last 2 are the diagonals
     vector<int> failed_words {0,0,0,0,0,0,0,0};
+
     vector<string> words;
     bool Word_compare(string word,string rword);
 public:
@@ -23,7 +26,9 @@ public:
 };
 template<typename T>
 class Word_RandomPlayer : public RandomPlayer<T>{
-    int random_word = 26;
+    int random_word = 26;  // number to generate letter from alphabet
+
+    // alphabet to let random player choose random letter from it
     vector<char> alphabet{'a','b','c','d','e','f','j','h','i','g','k','l','m'
             ,'n','o','p','q','r','s','t','u','v','w','x','y','z'};
 public:
@@ -31,12 +36,16 @@ public:
     void getmove(int &x,int &y);
 };
 
+// the Implementation
+
+
 #include <iomanip>
 #include <iostream>
 #include <cctype>
 #include <fstream>
 using namespace std;
 
+// Initialization of Word_Game of row and columns of 3
 template<typename T>
 Word_Game<T> :: Word_Game() {
 
@@ -50,6 +59,7 @@ Word_Game<T> :: Word_Game() {
     }
     this->n_moves = 0;
 
+    // input file of words to compare in a vector "words"
     string line;
     ifstream infile("dic.txt");
     while (infile >> line){
@@ -58,6 +68,7 @@ Word_Game<T> :: Word_Game() {
     infile.close();
 }
 
+// ensure that if the move is valid or not
 template<typename T>
 bool Word_Game<T>::update_board(int x, int y, T symbol) {
 
@@ -76,6 +87,7 @@ bool Word_Game<T>::update_board(int x, int y, T symbol) {
     return false;
 }
 
+// Display the board
 template<typename T>
 void Word_Game<T>::display_board() {
 
@@ -93,12 +105,14 @@ void Word_Game<T>::display_board() {
     cout << "-------------------------" << endl;
 }
 
+// check if player won or not
 template<typename T>
 bool Word_Game<T>::is_win() {
 
     string Word;
     string Rword;
 
+    // check all rows and create words and reverse words
     for (int i = 0; i < this->rows; ++i) {
         if (this->board[i][0] != 0 &&
         this->board[i][1] != 0 && this->board[i][2] != 0){
@@ -120,6 +134,7 @@ bool Word_Game<T>::is_win() {
         }
     }
 
+    // check all columns and create words and reverse words
     for (int i = 0; i < this->columns; ++i) {
         if (this->board[0][i] != 0 &&
             this->board[1][i] != 0 && this->board[2][i] != 0){
@@ -141,6 +156,7 @@ bool Word_Game<T>::is_win() {
         }
     }
 
+    // check the two diagonals and create words and reverse words
     for (int i = 0; i < 2; ++i) {
         if (this->board[0][2*i] != 0 &&
             this->board[1][1] != 0 && this->board[2][2-(2*i)] != 0){
@@ -153,7 +169,6 @@ bool Word_Game<T>::is_win() {
                 Rword += this->board[2][2-(2*i)];
                 Rword += this->board[1][1];
                 Rword += this->board[0][2*i];
-
                 if (Word_compare(Word,Rword)){
                     return true;
                 }
@@ -165,6 +180,7 @@ bool Word_Game<T>::is_win() {
     return false;
 }
 
+// take word and reversed word from is_win to compare it to see if it is in the vector "words"
 template<typename T>
 bool Word_Game<T>::Word_compare(string word,string rword) {
 
@@ -177,21 +193,26 @@ bool Word_Game<T>::Word_compare(string word,string rword) {
     return false;
 }
 
+// check if the game is ended in a draw
 template<typename T>
 bool Word_Game<T>::is_draw() {
     return (this->n_moves == 9 && !(is_win()));
 }
 
+// ending the game
 template<typename T>
 bool Word_Game<T>::game_is_over() {
     return (is_win() || is_draw());
 }
 
+// Constructor of Word_Player with name and symbol
 template<typename T>
 Word_Player<T> ::Word_Player(string name, T symbol) : Player<T>(name,symbol) {}
 
+// it handles the error of the first loop in getmove
 static bool first = true;
 
+// safe input with string before convert it to int
 template<typename T>
 void Word_Player<T>::getmove(int &x, int &y) {
 
@@ -218,43 +239,42 @@ void Word_Player<T>::getmove(int &x, int &y) {
             y = stoi(position2);
             break;
         }
-
         cout << "wrong inputs" << endl;
     }
-
     while (true){
         char letter;
         string cha;
         cout << "enter a letter to create a word:";
         getline(cin,cha);
-
         if (cha.size() == 1 && isalpha(cha[0])){
             letter = cha[0];
             this->symbol = letter;
             break;
         }
-        
         cout << "wrong input" << endl;
 
     }
 
 }
 
+//Constructor of Word_RandomPlayer with default name and symbol
 template<typename T>
 Word_RandomPlayer<T> ::Word_RandomPlayer(T symbol) : RandomPlayer<T>(symbol){
     this->dimension = 3;
     srand(static_cast<unsigned int>(time(nullptr)));
 }
 
+// input by random
 template<typename T>
 void Word_RandomPlayer<T>::getmove(int &x, int &y) {
     x = rand() % this->dimension;
     y = rand() % this->dimension;
-
+    
+    // input a letter by random
     int i;
     i = rand() % random_word;
     this->symbol = alphabet[i];
 }
 
 
-#endif //OOP_2_WORD_GAME_H
+#endif WORD_GAME_H
